@@ -32,8 +32,10 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         model: 'gpt-4', // Use GPT-4 for better interview questions
         messages,
-        max_tokens: 300,
-        temperature: 0.7
+        max_tokens: 100, // Reduced from 300 to encourage shorter responses
+        temperature: 0.6, // Slightly lower for more consistent, focused responses
+        presence_penalty: 0.1, // Slight penalty to discourage repetition
+        frequency_penalty: 0.2 // Discourage repeating the same words/phrases
       })
     });
 

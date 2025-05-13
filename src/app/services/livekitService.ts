@@ -1,4 +1,5 @@
-import { Room, RoomEvent, RemoteParticipant, LocalParticipant, LocalTrack, Track } from 'livekit-client';
+import { Room, RoomEvent, RemoteParticipant, LocalParticipant, LocalTrack, Track, LocalTrackPublication } from 'livekit-client';
+import { createLocalAudioTrack } from 'livekit-client';
 
 // This service handles LiveKit integration for real-time voice communication
 class LiveKitService {
@@ -56,7 +57,7 @@ class LiveKitService {
 
     try {
       // Request microphone access
-      const microphoneTrack = await LocalTrack.createAudioTrack();
+      const microphoneTrack = await createLocalAudioTrack();
       
       // Publish the track to the room
       await this.localParticipant.publishTrack(microphoneTrack);
@@ -75,11 +76,8 @@ class LiveKitService {
       return;
     }
 
-    // Unpublish all audio tracks
-    this.localParticipant.audioTracks.forEach(publication => {
-      publication.track?.stop();
-      this.localParticipant?.unpublishTrack(publication.track);
-    });
+    // Use the built-in method to disable microphone
+    await this.localParticipant.setMicrophoneEnabled(false);
     
     console.log('Microphone stopped');
   }

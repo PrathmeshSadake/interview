@@ -169,8 +169,10 @@ class SpeechService {
     // If voices array is empty, wait for voices to load and try again
     if (voices.length === 0) {
       this.synthesis.onvoiceschanged = () => {
-        voices = this.synthesis.getVoices();
-        this.selectVoiceAndSpeak(utterance, voices, text, onEnd);
+        if (this.synthesis) {
+          voices = this.synthesis.getVoices();
+          this.selectVoiceAndSpeak(utterance, voices, text, onEnd);
+        }
       };
     } else {
       this.selectVoiceAndSpeak(utterance, voices, text, onEnd);

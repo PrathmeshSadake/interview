@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI-Powered Voice-to-Voice Interview System
 
-## Getting Started
+This project provides an AI-driven interview platform that uses voice technology to create a dynamic, conversational interview experience. The system uses LiveKit for real-time voice communication and OpenAI for generating intelligent interview questions based on user responses.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **User Information Collection**: Collects basic information such as name, position, and experience before the interview.
+- **Voice-Based Interview**: Conducts the entire interview through voice interaction using the Web Speech API.
+- **Dynamic Question Generation**: Uses OpenAI to generate context-aware follow-up questions based on previous responses.
+- **Real-Time Voice Communication**: Integrates with LiveKit for high-quality, low-latency voice interaction.
+- **Text-to-Speech**: Converts AI-generated questions into spoken voice.
+- **Speech-to-Text**: Converts user voice responses into text for processing.
+- **Interview Summary**: Provides a summary of the interview after completion.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Dynamic Interview Experience
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The interview system creates a natural, conversational experience by:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Starting with an introductory question tailored to the position
+2. Analyzing the candidate's responses to generate relevant follow-up questions
+3. Asking for clarification or examples when needed
+4. Adapting the interview flow based on the candidate's answers
+5. Creating a personalized interview summary highlighting strengths and areas for improvement
 
-## Learn More
+The AI interviewer is designed to probe deeper into technical skills, ask about problem-solving approaches, and explore behavioral scenarios based on the context of the conversation.
 
-To learn more about Next.js, take a look at the following resources:
+## Tech Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Next.js**: React framework for building the web application
+- **TypeScript**: For type-safe code
+- **Tailwind CSS**: For styling the UI
+- **LiveKit**: For real-time voice communication
+- **OpenAI API**: For generating dynamic interview questions
+- **Web Speech API**: For speech recognition and text-to-speech functionality
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Setup
 
-## Deploy on Vercel
+1. Clone the repository:
+   ```
+   git clone <repository-url>
+   cd interview-system
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. Install dependencies:
+   ```
+   npm install
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. Create a `.env.local` file in the root directory with the following environment variables:
+   ```
+   # Required for OpenAI API
+   OPENAI_API_KEY=your_openai_api_key
+
+   # Required for LiveKit integration (optional for demo)
+   NEXT_PUBLIC_LIVEKIT_URL=your_livekit_url
+   LIVEKIT_API_KEY=your_livekit_api_key
+   LIVEKIT_API_SECRET=your_livekit_api_secret
+   ```
+
+4. Run the development server:
+   ```
+   npm run dev
+   ```
+
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Project Structure
+
+- `/src/app/components`: React components for the interview UI
+- `/src/app/services`: Service files for LiveKit, OpenAI, and speech handling
+- `/src/app/types`: TypeScript type definitions
+- `/src/app/api`: Server-side API routes for secure integration with external services
+
+## Key Components
+
+- **InterviewForm**: Collects user information before starting the interview
+- **InterviewSession**: Handles the real-time voice interview
+- **InterviewApp**: Main component that orchestrates the interview flow
+- **OpenAI Service**: Handles generation of dynamic interview questions and summaries
+- **Speech Service**: Manages speech recognition and text-to-speech functionality
+
+## Notes
+
+- The current implementation includes fallback mechanisms when APIs are unavailable:
+  1. If OpenAI API is not configured, the system will use predefined questions
+  2. If Web Speech API is not supported by the browser, it will simulate voice interaction
+
+- For production deployment, make sure to:
+  1. Configure a proper OpenAI API key with sufficient rate limits
+  2. Set up a LiveKit server for production use
+  3. Implement proper token generation for LiveKit
+
+## License
+
+MIT

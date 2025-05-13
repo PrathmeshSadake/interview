@@ -1,8 +1,11 @@
+"use client";
 import { useState, useEffect, useRef } from 'react';
 import { FaMicrophone, FaMicrophoneSlash, FaSpinner } from 'react-icons/fa';
 import { livekitService } from '../services/livekitService';
 import { openaiService } from '../services/openaiService';
 import { speechService } from '../services/speechService';
+import Card from './Card';
+import UIButton from './UIButton';
 
 interface InterviewSessionProps {
   userInfo: {
@@ -22,8 +25,16 @@ export default function InterviewSession({ userInfo, onEndInterview }: Interview
   const [isConnected, setIsConnected] = useState(false);
   const [isBotSpeaking, setIsBotSpeaking] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [activeMessageIndex, setActiveMessageIndex] = useState(0);
   const conversationContainerRef = useRef<HTMLDivElement>(null);
   
+  // Set active message index to latest message
+  useEffect(() => {
+    if (conversation.length > 0) {
+      setActiveMessageIndex(conversation.length - 1);
+    }
+  }, [conversation.length]);
+
   // Scroll to bottom of conversation when it updates
   useEffect(() => {
     if (conversationContainerRef.current) {
@@ -169,80 +180,99 @@ export default function InterviewSession({ userInfo, onEndInterview }: Interview
     // Call the parent callback
     onEndInterview();
   };
+
+  // Get current active message
+  const activeMessage = conversation[activeMessageIndex] || null;
   
   return (
-    <div className="max-w-2xl w-full mx-auto bg-white rounded-lg shadow-md overflow-hidden">
-      <div className="p-4 bg-blue-600 text-white">
-        <h2 className="text-xl font-semibold">Interview in Progress</h2>
-        <p className="text-sm opacity-80">Position: {userInfo.position}</p>
+    <Card className="w-full max-w-2xl mx-auto" variant="glassmorphic">
+      <div className="flex justify-between items-center mb-5 pb-3 border-b border-gray-800">
+        <div>
+          <h2 className="text-xl font-semibold text-white">Interview in Progress</h2>
+          <p className="text-sm text-gray-400">Position: {userInfo.position}</p>
+        </div>
+        <UIButton
+          onClick={handleEndInterview}
+          variant="secondary"
+        >
+          End Interview
+        </UIButton>
       </div>
       
-      <div 
-        ref={conversationContainerRef}
-        className="h-96 p-4 overflow-y-auto bg-gray-50"
-      >
-        {conversation.map((entry, index) => (
+      <div className="space-y-4 mb-5">
+        {/* Current active message display */}
+        {activeMessage && (
           <div 
-            key={index} 
-            className={`mb-3 p-3 rounded-lg ${
-              entry.speaker === 'bot' 
-                ? 'bg-blue-100 mr-12' 
-                : 'bg-gray-200 ml-12'
+            className={`p-4 rounded-lg ${
+              activeMessage.speaker === 'bot' 
+                ? 'bg-gray-800/70 border-l-2 border-blue-500' 
+                : 'bg-blue-600/20 border-l-2 border-green-400'
             }`}
           >
-            <p className="text-sm font-semibold mb-1">
-              {entry.speaker === 'bot' ? 'Interviewer' : 'You'}
+            <p className="text-sm font-medium mb-2 text-gray-400">
+              {activeMessage.speaker === 'bot' ? 'Interviewer' : 'You'}
             </p>
-            <p>{entry.text}</p>
+            <p className="text-gray-200 text-lg">{activeMessage.text}</p>
           </div>
-        ))}
+        )}
+        
+        {/* Conversation history indicator pills */}
+        {conversation.length > 1 && (
+          <div className="flex justify-center space-x-1 pt-2">
+            {conversation.map((_, index) => (
+              <button
+                key={index}
+                className={`h-2 rounded-full transition-all ${
+                  index === activeMessageIndex 
+                    ? 'w-4 bg-blue-500' 
+                    : 'w-2 bg-gray-700'
+                }`}
+                onClick={() => setActiveMessageIndex(index)}
+                aria-label={`View message ${index + 1}`}
+              />
+            ))}
+          </div>
+        )}
         
         {isLoading && (
-          <div className="flex items-center justify-center py-4">
-            <FaSpinner className="animate-spin text-blue-600 mr-2" />
-            <span className="text-gray-600">Generating response...</span>
+          <div className="flex items-center justify-center py-3">
+            <FaSpinner className="animate-spin text-blue-500 mr-2" />
+            <span className="text-gray-400">Generating response...</span>
           </div>
         )}
       </div>
       
-      <div className="p-4 border-t border-gray-200">
+      <div className="bg-gray-900/80 rounded-lg p-4 border border-gray-800/50">
         <div className="flex items-center space-x-3">
           <button
             onClick={toggleListening}
             disabled={isBotSpeaking || isLoading}
-            className={`p-3 rounded-full ${
+            className={`p-4 rounded-full transition-all duration-200 ${
               isListening 
-                ? 'bg-red-500 text-white' 
+                ? 'bg-red-600 text-white' 
                 : isBotSpeaking || isLoading
-                  ? 'bg-gray-400 text-white cursor-not-allowed'
-                  : 'bg-blue-600 text-white'
+                  ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                  : 'bg-blue-600 text-white hover:bg-blue-700'
             }`}
           >
             {isListening ? <FaMicrophoneSlash size={20} /> : <FaMicrophone size={20} />}
           </button>
           
-          <div className="flex-1 p-2 rounded-md bg-gray-100">
+          <div className="flex-1 p-3 rounded-lg bg-gray-800/50 border border-gray-700/50 text-gray-300 min-h-12">
             {isBotSpeaking ? (
-              <p className="text-gray-500">Interviewer is speaking...</p>
+              <p className="text-gray-400">Interviewer is speaking...</p>
             ) : isLoading ? (
-              <p className="text-gray-500">Processing your response...</p>
+              <p className="text-gray-400">Processing your response...</p>
             ) : isListening ? (
-              <p className="text-gray-500">Listening...</p>
+              <p className="text-gray-400">Listening...</p>
             ) : (
-              <p className="text-gray-500">
+              <p className="text-gray-400">
                 {transcript ? transcript : "Click the microphone to speak"}
               </p>
             )}
           </div>
-          
-          <button
-            onClick={handleEndInterview}
-            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
-          >
-            End Interview
-          </button>
         </div>
       </div>
-    </div>
+    </Card>
   );
 } 

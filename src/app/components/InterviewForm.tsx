@@ -1,4 +1,9 @@
+"use client";
 import { useState } from 'react';
+import Card from './Card';
+import InputField from './InputField';
+import UIButton from './UIButton';
+import { FiUser, FiBriefcase, FiCalendar, FiInfo, FiEdit2 } from 'react-icons/fi';
 
 interface InterviewFormProps {
   onSubmit: (formData: {
@@ -7,9 +12,16 @@ interface InterviewFormProps {
     experience: string;
     additionalInfo: string;
   }) => void;
+  isMinimized?: boolean;
+  userInfo?: {
+    name: string;
+    position: string;
+    experience: string;
+    additionalInfo: string;
+  } | null;
 }
 
-export default function InterviewForm({ onSubmit }: InterviewFormProps) {
+export default function InterviewForm({ onSubmit, isMinimized = false, userInfo }: InterviewFormProps) {
   const [formData, setFormData] = useState({
     name: '',
     position: '',
@@ -27,76 +39,112 @@ export default function InterviewForm({ onSubmit }: InterviewFormProps) {
     onSubmit(formData);
   };
 
-  return (
-    <div className="max-w-md w-full mx-auto bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-4">Enter Your Information</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-            Full Name
-          </label>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            required
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+  // Show a different view when minimized and we have user info
+  if (isMinimized && userInfo) {
+    return (
+      <Card className="w-full" variant="glassmorphic">
+        <div className="border-b border-gray-800 pb-3 mb-3">
+          <h3 className="text-white font-medium">Interview Details</h3>
         </div>
         
-        <div>
-          <label htmlFor="position" className="block text-sm font-medium text-gray-700 mb-1">
-            Position Applied For
-          </label>
-          <input
+        <div className="space-y-3 text-sm">
+          <div>
+            <p className="text-gray-400">Name</p>
+            <p className="text-white font-medium">{userInfo.name}</p>
+          </div>
+          
+          <div>
+            <p className="text-gray-400">Position</p>
+            <p className="text-white font-medium">{userInfo.position}</p>
+          </div>
+          
+          <div>
+            <p className="text-gray-400">Experience</p>
+            <p className="text-white font-medium">{userInfo.experience}</p>
+          </div>
+          
+          {userInfo.additionalInfo && (
+            <div>
+              <p className="text-gray-400">Additional Info</p>
+              <p className="text-gray-300 text-xs">{userInfo.additionalInfo}</p>
+            </div>
+          )}
+        </div>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className="w-full max-w-2xl mx-auto" variant="glassmorphic">
+      <div className="mb-5 border-b border-gray-800 pb-4">
+        <h2 className="text-2xl font-semibold text-white mb-2">Interview Information</h2>
+        <p className="text-gray-400">Please provide your details to begin the AI interview</p>
+      </div>
+      
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {/* Name field - full width */}
+        <InputField
+          id="name"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          label="Full Name"
+          placeholder="Enter your full name"
+          icon={FiUser}
+          required
+          className="mb-1"
+        />
+        
+        {/* Position and Experience on the same line for larger screens */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <InputField
             id="position"
             name="position"
-            type="text"
-            required
             value={formData.position}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            label="Position Applied For"
+            placeholder="Enter the position"
+            icon={FiBriefcase}
+            required
           />
-        </div>
-        
-        <div>
-          <label htmlFor="experience" className="block text-sm font-medium text-gray-700 mb-1">
-            Years of Experience
-          </label>
-          <input
+          
+          <InputField
             id="experience"
             name="experience"
-            type="text"
-            required
             value={formData.experience}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            label="Years of Experience"
+            placeholder="e.g., 5 years"
+            icon={FiCalendar}
+            required
           />
         </div>
         
         <div>
-          <label htmlFor="additionalInfo" className="block text-sm font-medium text-gray-700 mb-1">
-            Additional Information
-          </label>
-          <textarea
-            id="additionalInfo"
-            name="additionalInfo"
-            rows={3}
-            value={formData.additionalInfo}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+          <div className="flex justify-between items-end">
+            <InputField
+              id="additionalInfo"
+              name="additionalInfo"
+              value={formData.additionalInfo}
+              onChange={handleChange}
+              label="Additional Information"
+              placeholder="Any other relevant details for the interviewer"
+              icon={FiInfo}
+              multiline
+              rows={3}
+              className="flex-1 mr-4"
+            />
+
+            <UIButton 
+              type="submit"
+              onClick={() => {}}
+              className="px-8 py-3 min-w-[120px] self-end"
+            >
+              Start
+            </UIButton>
+          </div>
         </div>
-        
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        >
-          Start Interview
-        </button>
       </form>
-    </div>
+    </Card>
   );
 } 

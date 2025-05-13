@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BuildFastWithAI Interview Bot",
-  description: "Interview Bot- BuildFastWithAI",
+  title: "AI Interview Bot | BuildFastWithAI",
+  description: "Experience dynamic, voice-driven interviews powered by artificial intelligence",
 };
 
 export default function RootLayout({
@@ -24,8 +24,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta name="theme-color" content="#0f172a" />
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen font-[family-name:var(--font-geist-sans)]`}
       >
         {children}
       </body>

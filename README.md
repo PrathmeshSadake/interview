@@ -1,94 +1,115 @@
-# AI-Powered Voice-to-Voice Interview System
+# AI Interview Bot with LiveKit, OpenAI, and ElevenLabs
 
-This project provides an AI-driven interview platform that uses voice technology to create a dynamic, conversational interview experience. The system uses LiveKit for real-time voice communication and OpenAI for generating intelligent interview questions based on user responses.
+This project creates an AI-powered interview bot that can conduct real-time voice conversations using:
+
+- **LiveKit Agents** for handling real-time audio processing
+- **OpenAI** for chat generation and language modeling
+- **ElevenLabs** for high-quality voice synthesis
+- **Deepgram** for accurate speech-to-text transcription
 
 ## Features
 
-- **User Information Collection**: Collects basic information such as name, position, and experience before the interview.
-- **Voice-Based Interview**: Conducts the entire interview through voice interaction using the Web Speech API.
-- **Dynamic Question Generation**: Uses OpenAI to generate context-aware follow-up questions based on previous responses.
-- **Real-Time Voice Communication**: Integrates with LiveKit for high-quality, low-latency voice interaction.
-- **Text-to-Speech**: Converts AI-generated questions into spoken voice.
-- **Speech-to-Text**: Converts user voice responses into text for processing.
-- **Interview Summary**: Provides a summary of the interview after completion.
+- Real-time conversation with natural voice interactions
+- Interview question generation based on job position and experience
+- Real-time speech transcription using Deepgram
+- High-quality voice synthesis with ElevenLabs
+- Option to select different ElevenLabs voices
+- Interview summary generation
 
-## Dynamic Interview Experience
+## Prerequisites
 
-The interview system creates a natural, conversational experience by:
+- Node.js (v18 or later)
+- LiveKit Cloud account or self-hosted LiveKit server
+- OpenAI API key
+- ElevenLabs API key
+- Deepgram API key
 
-1. Starting with an introductory question tailored to the position
-2. Analyzing the candidate's responses to generate relevant follow-up questions
-3. Asking for clarification or examples when needed
-4. Adapting the interview flow based on the candidate's answers
-5. Creating a personalized interview summary highlighting strengths and areas for improvement
+## Environment Variables
 
-The AI interviewer is designed to probe deeper into technical skills, ask about problem-solving approaches, and explore behavioral scenarios based on the context of the conversation.
+Create a `.env.local` file in the root of the project with the following variables:
 
-## Tech Stack
+```
+NEXT_PUBLIC_LIVEKIT_URL=your-livekit-url
+LIVEKIT_API_KEY=your-livekit-api-key
+LIVEKIT_API_SECRET=your-livekit-api-secret
+OPENAI_API_KEY=your-openai-api-key
+NEXT_PUBLIC_ELEVENLABS_API_KEY=your-elevenlabs-api-key
+ELEVENLABS_API_KEY=your-elevenlabs-api-key
+NEXT_PUBLIC_DEEPGRAM_API_KEY=your-deepgram-api-key
+```
 
-- **Next.js**: React framework for building the web application
-- **TypeScript**: For type-safe code
-- **Tailwind CSS**: For styling the UI
-- **LiveKit**: For real-time voice communication
-- **OpenAI API**: For generating dynamic interview questions
-- **Web Speech API**: For speech recognition and text-to-speech functionality
+## Installation
 
-## Setup
-
-1. Clone the repository:
-   ```
-   git clone <repository-url>
-   cd interview-system
-   ```
-
+1. Clone the repository
 2. Install dependencies:
-   ```
-   npm install
-   ```
 
-3. Create a `.env.local` file in the root directory with the following environment variables:
-   ```
-   # Required for OpenAI API
-   OPENAI_API_KEY=your_openai_api_key
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
 
-   # Required for LiveKit integration (optional for demo)
-   NEXT_PUBLIC_LIVEKIT_URL=your_livekit_url
-   LIVEKIT_API_KEY=your_livekit_api_key
-   LIVEKIT_API_SECRET=your_livekit_api_secret
-   ```
+3. Run the development server:
 
-4. Run the development server:
-   ```
-   npm run dev
-   ```
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-## Project Structure
+## Using LiveKit Agents
 
-- `/src/app/components`: React components for the interview UI
-- `/src/app/services`: Service files for LiveKit, OpenAI, and speech handling
-- `/src/app/types`: TypeScript type definitions
-- `/src/app/api`: Server-side API routes for secure integration with external services
+This project supports LiveKit Agents for a complete voice assistant experience. To use LiveKit Agents:
 
-## Key Components
+1. Set up a LiveKit Cloud account at [livekit.io](https://livekit.io)
+2. Install the LiveKit CLI: `npm install -g livekit-cli`
+3. Authenticate with LiveKit Cloud: `lk cloud auth`
+4. Create a voice agent using the template:
 
-- **InterviewForm**: Collects user information before starting the interview
-- **InterviewSession**: Handles the real-time voice interview
-- **InterviewApp**: Main component that orchestrates the interview flow
-- **OpenAI Service**: Handles generation of dynamic interview questions and summaries
-- **Speech Service**: Manages speech recognition and text-to-speech functionality
+```bash
+lk app create --template voice-pipeline-agent-python
+```
 
-## Notes
+5. Configure your agent with your API keys when prompted
+6. Start your agent:
 
-- The current implementation includes fallback mechanisms when APIs are unavailable:
-  1. If OpenAI API is not configured, the system will use predefined questions
-  2. If Web Speech API is not supported by the browser, it will simulate voice interaction
+```bash
+cd <agent_dir>
+python3 -m venv venv
+source venv/bin/activate
+python3 -m pip install -r requirements.txt
+python3 agent.py dev
+```
 
-- For production deployment, make sure to:
-  1. Configure a proper OpenAI API key with sufficient rate limits
-  2. Set up a LiveKit server for production use
-  3. Implement proper token generation for LiveKit
+7. Update your `.env.local` file with the LiveKit URL, API key, and secret
+
+## Customizing the Agent
+
+You can customize the agent behavior by editing the `agent.py` file in your LiveKit agent project. For example, to use a different LLM model or TTS provider, modify the assistant initialization:
+
+```python
+assistant = VoiceAssistant(
+    vad=silero.VAD.load(),
+    stt=deepgram.STT(),
+    llm=openai.LLM(model="gpt-4o"),
+    tts=cartesia.TTS(),
+    chat_ctx=initial_ctx,
+)
+```
+
+## Fallback Behavior
+
+If LiveKit Agents is not configured, the application will fall back to using:
+
+- Browser's Web Speech API for speech recognition or Deepgram if configured
+- OpenAI for generating responses
+- ElevenLabs for text-to-speech if configured
 
 ## License
 

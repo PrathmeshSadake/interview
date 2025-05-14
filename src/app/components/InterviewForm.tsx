@@ -1,9 +1,17 @@
 "use client";
-import { useState } from 'react';
-import Card from './Card';
-import InputField from './InputField';
-import UIButton from './UIButton';
-import { FiUser, FiBriefcase, FiCalendar, FiInfo, FiEdit2 } from 'react-icons/fi';
+import { useState } from "react";
+import Card from "./Card";
+import InputField from "./InputField";
+import UIButton from "./UIButton";
+import {
+  FiUser,
+  FiBriefcase,
+  FiCalendar,
+  FiInfo,
+  FiEdit2,
+  FiMic,
+} from "react-icons/fi";
+import ElevenLabsVoiceSelector from "./ElevenLabsVoiceSelector";
 
 interface InterviewFormProps {
   onSubmit: (formData: {
@@ -11,6 +19,7 @@ interface InterviewFormProps {
     position: string;
     experience: string;
     additionalInfo: string;
+    voiceId?: string;
   }) => void;
   isMinimized?: boolean;
   userInfo?: {
@@ -18,20 +27,32 @@ interface InterviewFormProps {
     position: string;
     experience: string;
     additionalInfo: string;
+    voiceId?: string;
   } | null;
 }
 
-export default function InterviewForm({ onSubmit, isMinimized = false, userInfo }: InterviewFormProps) {
+export default function InterviewForm({
+  onSubmit,
+  isMinimized = false,
+  userInfo,
+}: InterviewFormProps) {
   const [formData, setFormData] = useState({
-    name: '',
-    position: '',
-    experience: '',
-    additionalInfo: '',
+    name: "",
+    position: "",
+    experience: "",
+    additionalInfo: "",
+    voiceId: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleVoiceChange = (voiceId: string) => {
+    setFormData((prev) => ({ ...prev, voiceId }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -46,27 +67,34 @@ export default function InterviewForm({ onSubmit, isMinimized = false, userInfo 
         <div className="border-b border-gray-800 pb-3 mb-3">
           <h3 className="text-white font-medium">Interview Details</h3>
         </div>
-        
+
         <div className="space-y-3 text-sm">
           <div>
             <p className="text-gray-400">Name</p>
             <p className="text-white font-medium">{userInfo.name}</p>
           </div>
-          
+
           <div>
             <p className="text-gray-400">Position</p>
             <p className="text-white font-medium">{userInfo.position}</p>
           </div>
-          
+
           <div>
             <p className="text-gray-400">Experience</p>
             <p className="text-white font-medium">{userInfo.experience}</p>
           </div>
-          
+
           {userInfo.additionalInfo && (
             <div>
               <p className="text-gray-400">Additional Info</p>
               <p className="text-gray-300 text-xs">{userInfo.additionalInfo}</p>
+            </div>
+          )}
+
+          {userInfo.voiceId && (
+            <div>
+              <p className="text-gray-400">Voice</p>
+              <p className="text-white font-medium">ElevenLabs Voice</p>
             </div>
           )}
         </div>
@@ -77,10 +105,14 @@ export default function InterviewForm({ onSubmit, isMinimized = false, userInfo 
   return (
     <Card className="w-full max-w-2xl mx-auto" variant="glassmorphic">
       <div className="mb-5 border-b border-gray-800 pb-4">
-        <h2 className="text-2xl font-semibold text-white mb-2">Interview Information</h2>
-        <p className="text-gray-400">Please provide your details to begin the AI interview</p>
+        <h2 className="text-2xl font-semibold text-white mb-2">
+          Interview Information
+        </h2>
+        <p className="text-gray-400">
+          Please provide your details to begin the AI interview
+        </p>
       </div>
-      
+
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Name field - full width */}
         <InputField
@@ -94,7 +126,7 @@ export default function InterviewForm({ onSubmit, isMinimized = false, userInfo 
           required
           className="mb-1"
         />
-        
+
         {/* Position and Experience on the same line for larger screens */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <InputField
@@ -107,7 +139,7 @@ export default function InterviewForm({ onSubmit, isMinimized = false, userInfo 
             icon={FiBriefcase}
             required
           />
-          
+
           <InputField
             id="experience"
             name="experience"
@@ -119,7 +151,12 @@ export default function InterviewForm({ onSubmit, isMinimized = false, userInfo 
             required
           />
         </div>
-        
+
+        {/* Voice selector */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <ElevenLabsVoiceSelector onChange={handleVoiceChange} />
+        </div>
+
         <div>
           <div className="flex justify-between items-end">
             <InputField
@@ -135,7 +172,7 @@ export default function InterviewForm({ onSubmit, isMinimized = false, userInfo 
               className="flex-1 mr-4"
             />
 
-            <UIButton 
+            <UIButton
               type="submit"
               onClick={() => {}}
               className="px-8 py-3 min-w-[120px] self-end"
@@ -147,4 +184,4 @@ export default function InterviewForm({ onSubmit, isMinimized = false, userInfo 
       </form>
     </Card>
   );
-} 
+}

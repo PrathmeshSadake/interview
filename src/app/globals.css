@@ -9,9 +9,16 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
-    background-image: 
-      radial-gradient(circle at 50% 0%, rgba(120, 120, 255, 0.09) 0%, transparent 50%),
-      radial-gradient(circle at 10% 90%, rgba(80, 80, 255, 0.08) 0%, transparent 60%);
+    background-image: radial-gradient(
+        circle at 50% 0%,
+        rgba(120, 120, 255, 0.09) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 10% 90%,
+        rgba(80, 80, 255, 0.08) 0%,
+        transparent 60%
+      );
     background-attachment: fixed;
   }
 }
@@ -20,7 +27,7 @@
   .text-balance {
     text-wrap: balance;
   }
-  
+
   /* Interview animations */
   .form-enter {
     opacity: 1;
@@ -29,7 +36,7 @@
     max-width: 42rem;
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  
+
   .form-minimized {
     opacity: 0.9;
     transform: scale(0.8) translateX(-5%);
@@ -37,30 +44,121 @@
     max-width: 24rem;
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  
+
   .conversation-enter {
     opacity: 0;
     transform: translateX(50px);
     transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  
+
   .conversation-active {
     opacity: 1;
     transform: translateX(0);
     transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  
+
   .stage-transition {
     transition: opacity 0.4s ease, transform 0.4s ease;
   }
-  
+
   .stage-enter {
     opacity: 0;
     transform: translateY(20px);
   }
-  
+
   .stage-active {
     opacity: 1;
     transform: translateY(0);
+  }
+
+  /* Custom scrollbar */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: rgba(31, 41, 55, 0.2);
+    border-radius: 10px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgba(75, 85, 99, 0.5);
+    border-radius: 10px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: rgba(96, 165, 250, 0.6);
+  }
+
+  /* Hide scrollbar when not hovering */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(75, 85, 99, 0.5) rgba(31, 41, 55, 0.2);
+  }
+
+  /* Tailwind doesn't have a built-in way to style scrollbars, so we define our own */
+  .scrollbar-thumb-gray-700::-webkit-scrollbar-thumb {
+    background: rgba(75, 85, 99, 0.5);
+  }
+
+  .scrollbar-track-gray-900::-webkit-scrollbar-track {
+    background: rgba(17, 24, 39, 0.2);
+  }
+}
+
+/* Glassmorphism and modern effects */
+.glassmorphic {
+  background: rgba(17, 25, 40, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* Glowing text effect */
+.glow-text {
+  text-shadow: 0 0 10px rgba(79, 70, 229, 0.3), 0 0 20px rgba(79, 70, 229, 0.2);
+}
+
+/* Button glow effects */
+.btn-glow {
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.3), 0 0 20px rgba(59, 130, 246, 0.2);
+}
+
+.btn-glow:hover {
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.5), 0 0 30px rgba(59, 130, 246, 0.3);
+}
+
+/* Subtle animations for UI elements */
+@keyframes pulse-subtle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Gradient animations */
+.gradient-animate {
+  background: linear-gradient(-45deg, #3b82f6, #6366f1, #8b5cf6, #3b82f6);
+  background-size: 400% 400%;
+  animation: gradient 5s ease infinite;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }

@@ -29,7 +29,7 @@ export default function InterviewSession({
   userInfo,
   onEndInterview,
 }: InterviewSessionProps) {
-  const [isListening, setIsListening] = useState(false);
+  const [isListening, setIsListening] = useState<any>(false);
   const [liveTranscript, setLiveTranscript] = useState("");
   const [botResponse, setBotResponse] = useState("");
   const [conversation, setConversation] = useState<
